@@ -1,41 +1,50 @@
 package main
 
 import (
-    "github.com/0x0000F1/chainware/pkg"
-
-	"fmt"
-	"net/http"
+    "fmt"
+    middleware "github.com/0x0000F1/chainware/pkg"
+    "net/http"
 )
 
-// Sample middleware that logs the request path.
-func loggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Printf("Request path: %s\n", r.URL.Path)
-		next.ServeHTTP(w, r)
-	})
-}
-
-// Sample middleware that adds a header.
-func addHeaderMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("X-Custom-Header", "MiddlewareHeader")
-		next.ServeHTTP(w, r)
-	})
-}
-
 func main() {
-	// Final handler that handles the request.
-	finalHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, World!"))
-	})
+    // Create a new middleware table
+    mt := middleware.NewMiddlewareTable()
 
-	// Create a new middleware chain with an initial capacity and sample middlewares.
-	chainware := chain.NewChain(2, loggingMiddleware, addHeaderMiddleware)
+    // Define some example middlewares
+    loggingMiddleware := func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            fmt.Println("Logging middleware")
+            next.ServeHTTP(w, r)
+        })
+    }
 
-	// Use the chain with the final handler.
-	http.Handle("/", chainware.Handler(finalHandler))
+    authMiddleware := func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            fmt.Println("Auth middleware")
+            next.ServeHTTP(w, r)
+        })
+    }
 
-	// Start the server.
-	http.ListenAndServe(":8080", nil)
+    // Add middlewares to the table for a specific route
+    mt.AddMiddleware("/example", loggingMiddleware)
+    mt.AddMiddleware("/example", authMiddleware)
+
+    // Define the final handler
+    finalHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        fmt.Fprintln(w, "Hello, World!")
+    })
+
+    // Create the server
+    http.HandleFunc("/example", func(w http.ResponseWriter, r *http.Request) {
+        chain := mt.GetChain("/example")
+        if chain != nil {
+            handler := chain.ChainMiddlewares(finalHandler)
+            handler.ServeHTTP(w, r)
+        } else {
+            finalHandler.ServeHTTP(w, r)
+        }
+    })
+
+    http.ListenAndServe(":8080", nil)
 }
 
