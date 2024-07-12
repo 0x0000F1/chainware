@@ -96,17 +96,19 @@ func main() {
 ## Documentation
 **`pkg/chain.go`**
 
-   - **Middleware**: A type definition for middleware functions.
-   - **Chain**: A struct representing a chain of middlewares.
-       - **NewChain(capacity int) *Chain**: Creates a new Chain with a given initial capacity.
-       - **AddMiddleware(m Middleware)**: Adds a middleware to the chain.
-       - **GetMiddlewares() []Middleware**: Returns the list of middlewares in the chain.
-       - **ChainMiddlewares(finalHandler http.Handler) http.Handler**: Chains the middlewares and returns the final http.Handler.
+- **Middleware**: A type definition for middleware functions.
 
-   - **MiddlewareTable**: A struct that holds multiple chains of middlewares.
-       - **NewMiddlewareTable() *MiddlewareTable**: Creates a new MiddlewareTable.
-       - **AddMiddleware(key string, m Middleware)**: Adds a middleware to the chain associated with the given key.
-       - **GetChain(key string) *Chain**: Returns the chain of middlewares associated with the given key.
+- **Chain**: A struct representing a chain of middlewares.
+  - `NewChain(capacity int) *Chain`: Creates a new `Chain` with a given initial capacity.
+  - `AddMiddleware(m Middleware)`: Adds a middleware to the chain.
+  - `GetMiddlewares() []Middleware`: Returns the list of middlewares in the chain.
+  - `ChainMiddlewares(finalHandler http.Handler) http.Handler`: Chains the middlewares and returns the final `http.Handler`.
+
+- **MiddlewareTable**: A struct that holds multiple chains of middlewares.
+  - `NewMiddlewareTable() *MiddlewareTable`: Creates a new `MiddlewareTable`.
+  - `AddMiddleware(key string, m Middleware)`: Adds a middleware to the chain associated with the given key.
+  - `GetChain(key string) *Chain`: Returns the chain of middlewares associated with the given key.
+
 
 ## Contributing
 
