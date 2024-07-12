@@ -1,4 +1,5 @@
 # Middleware Chaining Library for Go
+[![Go Reference](https://pkg.go.dev/badge/github.com/0x0000F1/chainware.svg)](https://pkg.go.dev/github.com/0x0000F1/chainware)
 
 This library provides a way to manage and chain HTTP middlewares using a hash table with separate chaining for Go's `net/http` package. It allows you to easily add, retrieve, and chain middlewares for different routes in a thread-safe manner.
 
@@ -87,13 +88,9 @@ func main() {
 ## Explanation
 
     1. **Middleware Type**: A Middleware is a function that wraps an http.Handler and returns a new http.Handler.
-
     2. **Chain**: A Chain represents a sequence of middlewares. It supports adding middlewares and chaining them to create a final http.Handler.
-
     3. **MiddlewareTable**: A MiddlewareTable manages multiple Chain instances, each associated with a different key (e.g., route path).
-
     4. **Adding Middlewares**: Use AddMiddleware to add a middleware to a chain associated with a specific key.
-
     5. **Chaining Middlewares**: Use ChainMiddlewares to wrap the final http.Handler with the middlewares in the chain.
 
 ## Documentation
