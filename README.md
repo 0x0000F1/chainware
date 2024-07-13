@@ -38,7 +38,7 @@ package main
 
 import (
     "fmt"
-    "github.com/0x0000F1/chainware"
+    middleware "github.com/0x0000F1/chainware"
     "net/http"
 )
 
